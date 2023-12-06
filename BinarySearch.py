@@ -26,9 +26,8 @@ class Hash:
         result = {}
         original_entries = []
 
-        keys = sorted(self.hash_table.keys())  # Ensure the keys are sorted
+        keys = sorted(self.hash_table.keys())  
 
-        # Binary search for the start and end indices
         start_index = self.binary_search(keys, target_start, 0, len(keys) - 1)
         end_index = self.binary_search(keys, target_end, 0, len(keys) - 1)
 
