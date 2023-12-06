@@ -50,10 +50,10 @@ def main():
     hash_table = Hash()
 
     headers = ['date', 'expenditure', 'category']
-    df = pd.read_csv('account_book.csv', names=headers)
+    df = pd.read_csv('data_A.csv', names=headers)
 
     for index, row in df.iterrows():
-        hash_table.push(str(row['date']), int(row['expenditure']), int(row['category']))
+        hash_table.push(str(row['date']), int(row['expenditure']), str(row['category']))
 
     target_start = str(input("시작 날짜 입력: "))
     target_end = str(input("종료 날짜 입력: "))
@@ -68,6 +68,14 @@ def main():
         print("\n-----누적 지출금액-----")
         for category, cumulative_expenditure in cumulative_expenditures.items():
             print(f"카테고리: {category}, 누적 지출금액(원): {cumulative_expenditure}")
+        
+        # Calculate category with the highest expenditure
+        max_category = max(cumulative_expenditures, key=cumulative_expenditures.get)
+        max_expenditure = cumulative_expenditures[max_category]
+        total_expenditure = sum(cumulative_expenditures.values())
+        percentage = (max_expenditure / total_expenditure) * 100
+
+        print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage:.2f}% 비율로 {max_category}분야입니다.")
     else:
         print("해당 기간의 지출이 없습니다.")
 
