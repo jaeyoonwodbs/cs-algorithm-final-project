@@ -61,11 +61,11 @@ def main():
     original_entries, cumulative_expenditures = hash_table.search_range(target_start, target_end)
 
     if original_entries:
-        print("-----지출 내역------")
+        print("\n-----지출 내역------")
         for entry in original_entries:
             print(f"지출금액(원): {entry[0]}, 카테고리: {entry[1]}")
 
-        print("\n-----누적 지출금액-----")
+        print("\n----누적 지출금액----")
         for category, cumulative_expenditure in cumulative_expenditures.items():
             print(f"카테고리: {category}, 누적 지출금액(원): {cumulative_expenditure}")
         

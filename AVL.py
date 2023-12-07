@@ -94,6 +94,8 @@ class AVLTree:
 
     def dfs(self, start_date, end_date):
         expenditures = []
+        category_totals = {}  # 카테고리별 누적 합계를 저장할 딕셔너리
+
         stack = [self.root]
 
         while stack:
@@ -101,16 +103,33 @@ class AVLTree:
             if current:
                 date = int(current.key)
                 if start_date <= date <= end_date:
-                    expenditures.extend(current.value)
+                    for value in current.value:
+                        expenditure, category = value
+                        expenditures.append((expenditure, category))  # 지출 내역을 리스트에 추가
+                        if category in category_totals:
+                            category_totals[category] += expenditure
+                        else:
+                            category_totals[category] = expenditure
+
                 if date >= start_date:
                     stack.append(current.left)
                 if date <= end_date:
                     stack.append(current.right)
 
-        return expenditures
+        print("\n[       DFS       ]")
+        print("-----지출 내역------")        
+        for expenditure, category in expenditures:
+            print(f"지출금액(원): {expenditure}, 카테고리: {category}")
+
+        print("\n----누적 지출금액----")
+        for category, total_expenditure in category_totals.items():
+            print(f"카테고리: {category}, 누적 지출금액(원): {total_expenditure}")
+
+        return expenditures, category_totals
 
     def bfs(self, start_date, end_date):
         expenditures = []
+        category_totals = {}  # 카테고리별 누적 합계를 저장할 딕셔너리
         queue = [self.root]
 
         while queue:
@@ -118,25 +137,28 @@ class AVLTree:
             if current:
                 date = int(current.key)
                 if start_date <= date <= end_date:
-                    expenditures.extend(current.value)
+                    for value in current.value:
+                        expenditure, category = value
+                        expenditures.append((expenditure, category))  # 지출 내역을 리스트에 추가
+                        if category in category_totals:
+                            category_totals[category] += expenditure
+                        else:
+                            category_totals[category] = expenditure
                 if date >= start_date:
                     queue.append(current.left)
                 if date <= end_date:
                     queue.append(current.right)
 
-        return expenditures
+        print("\n\n[       BFS       ]")
+        print("-----지출 내역------")          
+        for expenditure, category in expenditures:
+            print(f"지출금액(원): {expenditure}, 카테고리: {category}")
 
+        print("\n----누적 지출금액----")
+        for category, total_expenditure in category_totals.items():
+            print(f"카테고리: {category}, 누적 지출금액(원): {total_expenditure}")
 
-    def search(self, root, key):
-        if not root or root.key == key:
-            return root
-        if key < root.key:
-            return self.search(root.left, key)
-        return self.search(root.right, key)
-
-    def search_by_key(self, key):
-        node = self.search(self.root, key)
-        return node.value if node else None
+        return expenditures, category_totals
 
 def main():
     avl = AVLTree()
@@ -151,27 +173,24 @@ def main():
     target_end = int(input("종료 날짜 입력: "))
 
     ## DFS
-    print("--------DFS---------")
-    print("\n-----지출 내역------")
-    for expenditure, category in avl.dfs(target_start, target_end):
-        print(f"지출금액(원): {expenditure}, 카테고리: {category}")
+    dfs_expenditures, dfs_category_totals = avl.dfs(target_start, target_end)
+
+    max_category_dfs = max(dfs_category_totals, key=dfs_category_totals.get)
+    max_expenditure_dfs = dfs_category_totals[max_category_dfs]
+    total_expenditure_dfs = sum(dfs_category_totals.values())
+    percentage_dfs = (max_expenditure_dfs / total_expenditure_dfs) * 100 if total_expenditure_dfs > 0 else 0
+
+    print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_dfs:.2f}% 비율로 {max_category_dfs}분야입니다.")
 
     ## BFS
-    print("\n\n--------BFS--------")
-    print("\n-----지출 내역------")    
-    for expenditure, category in avl.bfs(target_start, target_end):
-        print(f"지출금액(원): {expenditure}, 카테고리: {category}")
+    bfs_expenditures, bfs_category_totals = avl.bfs(target_start, target_end)
 
+    max_category_bfs = max(bfs_category_totals, key=bfs_category_totals.get)
+    max_expenditure_bfs = bfs_category_totals[max_category_bfs]
+    total_expenditure_bfs = sum(bfs_category_totals.values())
+    percentage_bfs = (max_expenditure_bfs / total_expenditure_bfs) * 100 if total_expenditure_bfs > 0 else 0
 
-    '''
-    target = str(input("시작날짜 입력: "))
-    result = avl.search_by_key(target)
-    if result:
-        for value in result:
-            print(f"비용: {value[0]}, 카테고리: {value[1]}")
-    else:
-        print(f"{target}에 해당하는 데이터가 없습니다.")
-    '''
-        
+    print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_bfs:.2f}% 비율로 {max_category_bfs}분야입니다.")        
+
 if __name__ == "__main__":
     main()
