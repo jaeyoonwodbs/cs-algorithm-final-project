@@ -11,6 +11,8 @@ class AVLNode:
 class AVLTree:
     def __init__(self):
         self.root = None
+        self.comparison_count_dfs = 0
+        self.comparison_count_bfs = 0
 
     def height(self, node):
         if not node:
@@ -99,21 +101,29 @@ class AVLTree:
         stack = [self.root]
 
         while stack:
+            self.comparison_count_dfs+=1
             current = stack.pop()
             if current:
+                self.comparison_count_dfs+=1
                 date = int(current.key)
                 if start_date <= date <= end_date:
+                    self.comparison_count_dfs+=1
                     for value in current.value:
+                        self.comparison_count_dfs+=1
                         expenditure, category = value
                         expenditures.append((expenditure, category))  # 지출 내역을 리스트에 추가
                         if category in category_totals:
+                            self.comparison_count_dfs+=1
                             category_totals[category] += expenditure
                         else:
+                            self.comparison_count_dfs+=1
                             category_totals[category] = expenditure
 
                 if date >= start_date:
+                    self.comparison_count_dfs+=1
                     stack.append(current.left)
                 if date <= end_date:
+                    self.comparison_count_dfs+=1
                     stack.append(current.right)
 
         print("\n[       DFS       ]")
@@ -125,7 +135,7 @@ class AVLTree:
         for category, total_expenditure in category_totals.items():
             print(f"카테고리: {category}, 누적 지출금액(원): {total_expenditure}")
 
-        return expenditures, category_totals
+        return expenditures, category_totals,self.comparison_count_dfs
 
     def bfs(self, start_date, end_date):
         expenditures = []
@@ -133,20 +143,28 @@ class AVLTree:
         queue = [self.root]
 
         while queue:
+            self.comparison_count_bfs+=1
             current = queue.pop(0)
             if current:
+                self.comparison_count_bfs+=1
                 date = int(current.key)
                 if start_date <= date <= end_date:
+                    self.comparison_count_bfs+=1
                     for value in current.value:
+                        self.comparison_count_bfs+=1
                         expenditure, category = value
                         expenditures.append((expenditure, category))  # 지출 내역을 리스트에 추가
                         if category in category_totals:
+                            self.comparison_count_bfs+=1
                             category_totals[category] += expenditure
                         else:
+                            self.comparison_count_bfs+=1
                             category_totals[category] = expenditure
                 if date >= start_date:
+                    self.comparison_count_bfs+=1
                     queue.append(current.left)
                 if date <= end_date:
+                    self.comparison_count_bfs+=1
                     queue.append(current.right)
 
         print("\n\n[       BFS       ]")
@@ -158,7 +176,7 @@ class AVLTree:
         for category, total_expenditure in category_totals.items():
             print(f"카테고리: {category}, 누적 지출금액(원): {total_expenditure}")
 
-        return expenditures, category_totals
+        return expenditures, category_totals, self.comparison_count_bfs
 
 def main():
     avl = AVLTree()
@@ -173,7 +191,7 @@ def main():
     target_end = int(input("종료 날짜 입력: "))
 
     ## DFS
-    dfs_expenditures, dfs_category_totals = avl.dfs(target_start, target_end)
+    dfs_expenditures, dfs_category_totals, dfs_compare_count = avl.dfs(target_start, target_end)
 
     max_category_dfs = max(dfs_category_totals, key=dfs_category_totals.get)
     max_expenditure_dfs = dfs_category_totals[max_category_dfs]
@@ -182,15 +200,21 @@ def main():
 
     print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_dfs:.2f}% 비율로 {max_category_dfs}분야입니다.")
 
+    print("-----------------")
+    print(f"\nDFS 비교 연산 횟수: {dfs_compare_count}")
+
     ## BFS
-    bfs_expenditures, bfs_category_totals = avl.bfs(target_start, target_end)
+    bfs_expenditures, bfs_category_totals, bfs_compare_count = avl.bfs(target_start, target_end)
 
     max_category_bfs = max(bfs_category_totals, key=bfs_category_totals.get)
     max_expenditure_bfs = bfs_category_totals[max_category_bfs]
     total_expenditure_bfs = sum(bfs_category_totals.values())
     percentage_bfs = (max_expenditure_bfs / total_expenditure_bfs) * 100 if total_expenditure_bfs > 0 else 0
 
-    print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_bfs:.2f}% 비율로 {max_category_bfs}분야입니다.")        
+    print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_bfs:.2f}% 비율로 {max_category_bfs}분야입니다.")
+
+    print("-----------------")
+    print(f"\nBFS 비교 연산 횟수: {bfs_compare_count}")        
 
 if __name__ == "__main__":
     main()

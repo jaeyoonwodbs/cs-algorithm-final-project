@@ -1,6 +1,7 @@
 class Hash:
     def __init__(self):
         self.hash_table = {}
+        self.comparison_count=0
 
     def push(self, key, value1, value2):
         if key in self.hash_table:
@@ -15,17 +16,21 @@ class Hash:
         result = {}
         original_entries = []
         for key in self.hash_table:
+            self.comparison_count+=1
             if target_start <= key <= target_end:
+                self.comparison_count+=1
                 entries = self.hash_table[key]
                 original_entries.extend(entries)
                 for entry in entries:
+                    self.comparison_count+=1
                     category = entry[1]
                     expenditure = entry[0]
                     if category in result:
+                        self.comparison_count+=1
                         result[category] += expenditure
                     else:
                         result[category] = expenditure
-        return original_entries, result
+        return original_entries, result,self.comparison_count
 
 import pandas as pd
 
@@ -41,14 +46,14 @@ def main():
     target_start = str(input("시작 날짜 입력: "))
     target_end = str(input("종료 날짜 입력: "))
 
-    original_entries, cumulative_expenditures = hash_table.sequential_search(target_start, target_end)
+    original_entries, cumulative_expenditures, comparison_count = hash_table.sequential_search(target_start, target_end)
 
     if original_entries:
         print("\n-----지출 내역------")
         for entry in original_entries:
             print(f"지출금액(원): {entry[0]}, 카테고리: {entry[1]}")
 
-        print("\n----누적 지출금액----")
+        print("\n------누적 지출금액------")
         for category, cumulative_expenditure in cumulative_expenditures.items():
             print(f"카테고리: {category}, 누적 지출금액(원): {cumulative_expenditure}")
         
@@ -60,6 +65,9 @@ def main():
 
         print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage:.2f}% 비율로 {max_category}분야입니다.")
         
+        print("-----------------")
+        print(f"\n순차 탐색 비교 연산 횟수: {comparison_count}")
+
     else:
         print("해당 기간의 지출이 없습니다.")
 
