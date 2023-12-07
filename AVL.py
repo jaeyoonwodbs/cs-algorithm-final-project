@@ -92,6 +92,41 @@ class AVLTree:
     def insert_node(self, key, value):
         self.root = self.insert(self.root, key, value)
 
+    def dfs(self, start_date, end_date):
+        expenditures = []
+        stack = [self.root]
+
+        while stack:
+            current = stack.pop()
+            if current:
+                date = int(current.key)
+                if start_date <= date <= end_date:
+                    expenditures.extend(current.value)
+                if date >= start_date:
+                    stack.append(current.left)
+                if date <= end_date:
+                    stack.append(current.right)
+
+        return expenditures
+
+    def bfs(self, start_date, end_date):
+        expenditures = []
+        queue = [self.root]
+
+        while queue:
+            current = queue.pop(0)
+            if current:
+                date = int(current.key)
+                if start_date <= date <= end_date:
+                    expenditures.extend(current.value)
+                if date >= start_date:
+                    queue.append(current.left)
+                if date <= end_date:
+                    queue.append(current.right)
+
+        return expenditures
+
+
     def search(self, root, key):
         if not root or root.key == key:
             return root
@@ -107,20 +142,36 @@ def main():
     avl = AVLTree()
 
     headers = ['date', 'expenditure', 'category']
-    df = pd.read_csv('account_book.csv', names=headers)
+    df = pd.read_csv('data_A.csv', names=headers)
 
     for index, row in df.iterrows():
-        avl.insert_node(str(row['date']), (int(row['expenditure']), int(row['category'])))
+        avl.insert_node(str(row['date']), (int(row['expenditure']), str(row['category'])))
 
+    target_start = int(input("시작 날짜 입력: "))
+    target_end = int(input("종료 날짜 입력: "))
+
+    ## DFS
+    print("--------DFS---------")
+    print("\n-----지출 내역------")
+    for expenditure, category in avl.dfs(target_start, target_end):
+        print(f"지출금액(원): {expenditure}, 카테고리: {category}")
+
+    ## BFS
+    print("\n\n--------BFS--------")
+    print("\n-----지출 내역------")    
+    for expenditure, category in avl.bfs(target_start, target_end):
+        print(f"지출금액(원): {expenditure}, 카테고리: {category}")
+
+
+    '''
     target = str(input("시작날짜 입력: "))
-
     result = avl.search_by_key(target)
-
     if result:
         for value in result:
             print(f"비용: {value[0]}, 카테고리: {value[1]}")
     else:
         print(f"{target}에 해당하는 데이터가 없습니다.")
-
+    '''
+        
 if __name__ == "__main__":
     main()
