@@ -87,7 +87,7 @@ def main():
         print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage:.2f}% 비율로 {max_category}분야입니다.")
 
         print("-----------------")
-        print(f"\이진 탐색 비교 연산 횟수: {comparison_count}")
+        print(f"\n이진 탐색 비교 연산 횟수: {comparison_count}")
 
     else:
         print("해당 기간의 지출이 없습니다.")
