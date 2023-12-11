@@ -101,7 +101,6 @@ class AVLTree:
         stack = [self.root]
 
         while stack:
-            self.comparison_count_dfs+=1
             current = stack.pop()
             if current:
                 date = int(current.key)
@@ -181,7 +180,7 @@ def main():
     avl = AVLTree()
 
     headers = ['date', 'expenditure', 'category']
-    df = pd.read_csv('data_A.csv', names=headers)
+    df = pd.read_csv('expenses_not_sorted.csv', names=headers)
 
     for index, row in df.iterrows():
         avl.insert_node(str(row['date']), (int(row['expenditure']), str(row['category'])))
