@@ -104,7 +104,6 @@ class AVLTree:
             self.comparison_count_dfs+=1
             current = stack.pop()
             if current:
-                self.comparison_count_dfs+=1
                 date = int(current.key)
                 if start_date <= date <= end_date:
                     self.comparison_count_dfs+=1
