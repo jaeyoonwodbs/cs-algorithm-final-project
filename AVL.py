@@ -135,52 +135,11 @@ class AVLTree:
 
         return expenditures, category_totals,self.comparison_count_dfs
 
-    def bfs(self, start_date, end_date):
-        expenditures = []
-        category_totals = {}  # 카테고리별 누적 합계를 저장할 딕셔너리
-        queue = [self.root]
-
-        while queue:
-            self.comparison_count_bfs+=1
-            current = queue.pop(0)
-            if current:
-                self.comparison_count_bfs+=1
-                date = int(current.key)
-                if start_date <= date <= end_date:
-                    self.comparison_count_bfs+=1
-                    for value in current.value:
-                        self.comparison_count_bfs+=1
-                        expenditure, category = value
-                        expenditures.append((expenditure, category))  # 지출 내역을 리스트에 추가
-                        if category in category_totals:
-                            self.comparison_count_bfs+=1
-                            category_totals[category] += expenditure
-                        else:
-                            self.comparison_count_bfs+=1
-                            category_totals[category] = expenditure
-                if date >= start_date:
-                    self.comparison_count_bfs+=1
-                    queue.append(current.left)
-                if date <= end_date:
-                    self.comparison_count_bfs+=1
-                    queue.append(current.right)
-
-        print("\n\n[       BFS       ]")
-        print("-----지출 내역------")          
-        for expenditure, category in expenditures:
-            print(f"지출금액(원): {expenditure}, 카테고리: {category}")
-
-        print("\n----누적 지출금액----")
-        for category, total_expenditure in category_totals.items():
-            print(f"카테고리: {category}, 누적 지출금액(원): {total_expenditure}")
-
-        return expenditures, category_totals, self.comparison_count_bfs
-
 def main():
     avl = AVLTree()
 
     headers = ['date', 'expenditure', 'category']
-    df = pd.read_csv('expenses_not_sorted.csv', names=headers)
+    df = pd.read_csv('cs-algorithm-final-project/data_B.csv', names=headers)
 
     for index, row in df.iterrows():
         avl.insert_node(str(row['date']), (int(row['expenditure']), str(row['category'])))
@@ -200,19 +159,6 @@ def main():
 
     print("-----------------")
     print(f"\nDFS 비교 연산 횟수: {dfs_compare_count}")
-
-    ## BFS
-    bfs_expenditures, bfs_category_totals, bfs_compare_count = avl.bfs(target_start, target_end)
-
-    max_category_bfs = max(bfs_category_totals, key=bfs_category_totals.get)
-    max_expenditure_bfs = bfs_category_totals[max_category_bfs]
-    total_expenditure_bfs = sum(bfs_category_totals.values())
-    percentage_bfs = (max_expenditure_bfs / total_expenditure_bfs) * 100 if total_expenditure_bfs > 0 else 0
-
-    print(f"\n'{target_start}'~'{target_end}' 중 가장 많은 지출 분야는 {percentage_bfs:.2f}% 비율로 {max_category_bfs}분야입니다.")
-
-    print("-----------------")
-    print(f"\nBFS 비교 연산 횟수: {bfs_compare_count}")        
 
 if __name__ == "__main__":
     main()
